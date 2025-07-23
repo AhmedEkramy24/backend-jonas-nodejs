@@ -38,15 +38,19 @@ const server = http.createServer((req, res) => {
     res.end("this is overview");
   } else if (pathName === "/product") {
     res.end("this is product");
+  } else if (pathName === "/api") {
+    fs.readFile("./dev-data/data.json", "utf-8", (err, data) => {
+      const farm = JSON.parse(data);
+      console.log(farm);
+      res.end("API");
+    });
   } else {
     res.writeHead(404, {
-      // "content-type": "text/html",
+      "content-type": "text/html",
       "my-own-header": "hello-world",
     });
     res.end("<h1>page not found !</h1>");
   }
-
-  res.end("Hello from the server!");
 });
 
 server.listen(8000, "127.0.0.1", () => {
