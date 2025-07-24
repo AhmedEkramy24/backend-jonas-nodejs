@@ -1,6 +1,7 @@
 const fs = require("fs");
 const http = require("http");
 const url = require("url");
+const replacingCard = require(`${__dirname}/modules/replacingCard.js`);
 
 // Syncronous (blocking)
 
@@ -32,18 +33,40 @@ const url = require("url");
 ////////////////////////////////////
 // SERVER
 
+// pages
+const overView = fs.readFileSync(
+  `${__dirname}/templates/overview.html`,
+  "utf-8"
+);
+const product = fs.readFileSync(`${__dirname}/templates/product.html`, "utf-8");
+const card = fs.readFileSync(`${__dirname}/templates/card.html`, "utf-8");
+// data
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
+const farm = JSON.parse(data);
+
 const server = http.createServer((req, res) => {
-  const pathName = req.url;
-  if (pathName === "/overview" || pathName === "/") {
-    res.end("this is overview");
-  } else if (pathName === "/product") {
-    res.end("this is product");
-  } else if (pathName === "/api") {
-    fs.readFile("./dev-data/data.json", "utf-8", (err, data) => {
-      const farm = JSON.parse(data);
-      console.log(farm);
-      res.end("API");
+  const { query, pathname } = url.parse(req.url, true);
+
+  // overView
+  if (pathname === "/overview" || pathname === "/") {
+    res.writeHead(200, {
+      "content-type": "text/html",
     });
+    const cards = farm.map((ele) => replacingCard(card, ele)).join("");
+    const output = overView.replace(/{%CARDS%}/g, cards);
+
+    res.end(output);
+    // product
+  } else if (pathname === "/product") {
+    res.writeHead(200, {
+      "content-type": "text/html",
+    });
+    let output = replacingCard(product, farm[query.id]);
+    res.end(output);
+    // api
+  } else if (pathname === "/api") {
+    res.end(farm);
+    // error page
   } else {
     res.writeHead(404, {
       "content-type": "text/html",
