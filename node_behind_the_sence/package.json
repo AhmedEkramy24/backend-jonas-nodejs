@@ -1,0 +1,12 @@
+{
+  "name": "node_behind_the_sence",
+  "version": "1.0.0",
+  "description": "node architecture",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "set UV_THREADPOOL_SIZE=2 & nodemon event-loop.js"
+  },
+  "author": "ahmed ekramy",
+  "license": "ISC"
+}
