@@ -65,6 +65,11 @@ app.post('/api/v2/tours', (req, res) => {
 
 app.patch('/api/v2/tours/:id', (req, res) => {
   const id = req.params.id;
+  if (id > tours.length) {
+    return res.status(404).json({
+      message: 'Invalid id',
+    });
+  }
   res
     .json({
       message: 'success',
@@ -72,6 +77,22 @@ app.patch('/api/v2/tours/:id', (req, res) => {
       id,
     })
     .status(200);
+});
+
+// DELETE tour
+
+app.delete('/api/v2/tours/:id', (req, res) => {
+  const id = req.params.id;
+  if (id > tours.length) {
+    return res.status(404).json({
+      message: 'Invalid id',
+    });
+  }
+  res.status(204).json({
+    message: 'success',
+    updatet: true,
+    id,
+  });
 });
 
 const port = 3000;
